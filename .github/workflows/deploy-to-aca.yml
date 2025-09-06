@@ -97,6 +97,7 @@ jobs:
         run: |
           EXISTS=$(az containerapp show -g ${{ env.RESOURCE_GROUP }} -n ${{ env.ACA_NAME }} --query id -o tsv 2>/dev/null || echo "")
           if [ -z "$EXISTS" ]; then
+            echo "Container App not found. Creating..."
             az containerapp create \
               -g ${{ env.RESOURCE_GROUP }} \
               -n ${{ env.ACA_NAME }} \
@@ -113,6 +114,7 @@ jobs:
               --max-replicas ${{ env.MAX_REPLICAS }}
             echo "CONTAINER_APP_CREATED=true" >> $GITHUB_ENV
           else
+            echo "Container App exists. Will update using deploy action."
             echo "CONTAINER_APP_CREATED=false" >> $GITHUB_ENV
 
       - name: Deploy/Update Azure Container Apps
